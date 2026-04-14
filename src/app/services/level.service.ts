@@ -5,6 +5,7 @@ import { Level } from '../models/Level';
   providedIn: 'root',
 })
 export class LevelService {
+  private readonly storageKey = 'levels';
   levelCells: Level[] = [];
 
   constructor() {
@@ -12,9 +13,10 @@ export class LevelService {
   }
 
   getLevel(cardsAmount: number): Level {
+    const lastLevel = this.levelCells[this.levelCells.length - 1];
     return (
       this.levelCells.find((level) => level.cardsAmount === cardsAmount) ??
-      this.levelCells[this.levelCells.length]
+      lastLevel
     );
   }
 
@@ -22,30 +24,57 @@ export class LevelService {
     let currentLevelId = this.levelCells.findIndex(
       (level) => level === currentlevel
     );
-    this.levelCells[currentLevelId + 1].isOpened = true;
+
+    if (currentLevelId < 0) {
+      currentLevelId = this.levelCells.length - 1;
+    }
+
+    const nextLevelId = currentLevelId + 1;
+    const nextLevel = this.levelCells[nextLevelId];
+
+    if (nextLevel) {
+      nextLevel.isOpened = true;
+    }
+
     this.saveLevels();
-    return (
-      this.levelCells[currentLevelId + 1] ??
-      this.levelCells[this.levelCells.length]
-    );
+    return nextLevel ?? this.levelCells[this.levelCells.length - 1];
   }
 
   saveLevels() {
     let savedLevels = JSON.stringify(this.levelCells);
-    localStorage.clear();
-    localStorage.setItem('levels', savedLevels);
+    localStorage.setItem(this.storageKey, savedLevels);
   }
 
   fetchLevels() {
-    if (localStorage.getItem('levels')) {
-      const levelsData: any[] = JSON.parse(
-        window.localStorage.getItem('levels')!
-      );
+    const savedLevels = window.localStorage.getItem(this.storageKey);
+    if (!savedLevels) {
+      this.createLevels();
+      this.saveLevels();
+      return;
+    }
 
-      this.levelCells = levelsData.map(
-        (data) => new Level(data.row, data.col, data.isOpened)
-      );
-    } else {
+    try {
+      const levelsData: unknown = JSON.parse(savedLevels);
+      if (!Array.isArray(levelsData)) {
+        throw new Error('Invalid levels payload');
+      }
+
+      const parsedLevels = levelsData
+        .filter(
+          (data): data is { row: number; col: number; isOpened?: boolean } =>
+            typeof data === 'object' &&
+            data !== null &&
+            typeof (data as { row?: unknown }).row === 'number' &&
+            typeof (data as { col?: unknown }).col === 'number'
+        )
+        .map((data) => new Level(data.row, data.col, Boolean(data.isOpened)));
+
+      if (parsedLevels.length === 0) {
+        throw new Error('No valid levels');
+      }
+
+      this.levelCells = parsedLevels;
+    } catch {
       this.createLevels();
       this.saveLevels();
     }

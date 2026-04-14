@@ -1,10 +1,11 @@
-<div
+<button
+  type="button"
   class="level"
   [ngClass]="{ 'input-disabled': !level.isOpened, tinted: !level.isOpened }"
   [routerLink]="['/game', level.cardsAmount]"
   (click)="launchGame()"
 >
-  <img class="starIcon" src="/assets/star.png" />
-  <img *ngIf="!level.isOpened" class="lockIcon" src="/assets/padlock.png" />
+  <img class="starIcon" src="/assets/star.png" alt="Level marker" />
+  <img *ngIf="!level.isOpened" class="lockIcon" src="/assets/padlock.png" alt="Locked level" />
   <div *ngIf="level.isOpened" class="levelNumber">{{ level.cardsAmount }}</div>
-</div>
+</button>

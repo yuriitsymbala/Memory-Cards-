@@ -1,6 +1,6 @@
 <div class="card" [ngClass]="{ flipped: card.isFlipped }">
-  <img class="icon default" src="/assets/question_mark.png" />
-  <img class="icon opened" src="/assets/card_icons/{{ card.imgName }}.png" />
+  <img class="icon default" src="/assets/question_mark.png" alt="Hidden card" />
+  <img class="icon opened" src="/assets/card_icons/{{ card.imgName }}.png" alt="Card symbol" />
 </div>
 <div class="cardOverlay" [ngClass]="{ showed: !card.isEnabled && !card.isFlipped }"
 ></div>

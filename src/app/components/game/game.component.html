@@ -1,7 +1,7 @@
 <div class="game">
   <div
     class="board"
-    [ngStyle]="{ '--colums-count': columsCount, '--card-width': cardSize }"
+    [ngStyle]="{ '--columns-count': columnsCount, '--card-width': cardSize }"
   >
     <card-cell
       *ngFor="let card of cardCells; let cardIndex = index"
@@ -10,6 +10,8 @@
       (flippedCardIndex)="onCardClick($event)"
     ></card-cell>
   </div>
-  <img class="backBtn" src="/assets/back_btn.png" [routerLink]="['/']" />
+  <button type="button" class="backBtn" [routerLink]="['/']" aria-label="Back to levels">
+    <img src="/assets/back_btn.png" alt="Back" />
+  </button>
   <popup #popup (navNextLevel)="nextLevel()"></popup>
 </div>

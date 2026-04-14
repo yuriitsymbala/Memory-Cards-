@@ -19,9 +19,27 @@ export class CardCellComponent {
     return !this.card.isEnabled;
   }
 
+  @HostBinding('attr.role') role = 'button';
+  @HostBinding('attr.tabindex') get tabIndex(): number {
+    return this.card?.isEnabled ? 0 : -1;
+  }
+  @HostBinding('attr.aria-disabled') get ariaDisabled(): string {
+    return String(!this.card?.isEnabled);
+  }
+
   @HostListener('click')
   toggleFlip() {
+    if (!this.card.isEnabled) {
+      return;
+    }
     this.card.isFlipped = !this.card.isFlipped;
     this.flippedCardIndex.emit(this.cardIndex);
+  }
+
+  @HostListener('keydown.enter')
+  @HostListener('keydown.space', ['$event'])
+  onKeyboardFlip(event?: Event) {
+    event?.preventDefault();
+    this.toggleFlip();
   }
 }

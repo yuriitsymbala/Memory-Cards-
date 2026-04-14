@@ -11,9 +11,9 @@
   flex-wrap: wrap;
 
   --card-width: 10rem;
-  --colums-count: 3;
+  --columns-count: 3;
 
-  width: calc(var(--card-width) * var(--colums-count) + 6px + 1.2rem);
+  width: calc(var(--card-width) * var(--columns-count) + 6px + 1.2rem);
 
   border-radius: 1.6rem;
   border: 3px dashed #484848;
@@ -24,10 +24,19 @@
 .backBtn {
   position: absolute;
   width: 5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
   left: 1rem;
   top: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.backBtn img {
+  display: block;
+  width: 100%;
 }
 
 .backBtn:hover {

@@ -14,7 +14,7 @@ import { getGridCellSize } from 'src/app/utils';
   imports: [LevelCellComponent, CommonModule, RouterLink],
 })
 export class LevelsComponent {
-  columsCount: number = 3;
+  columnsCount: number = 3;
   levelCells: Level[] = [];
   cellSize: string = getGridCellSize(3, 3);
 

@@ -6,18 +6,18 @@ import { Level } from '../models/Level';
   providedIn: 'root',
 })
 export class CardService {
-  columsCount: number = 3;
+  columnsCount: number = 3;
   cards: Card[] = [];
   firstFlippedIndex: number = -1;
   secondFlippedIndex: number = -1;
 
-  cardsUpdate!: (cards: Card[]) => void;
-  gameOver!: () => void;
+  cardsUpdate: (cards: Card[]) => void = () => {};
+  gameOver: () => void = () => {};
 
   constructor() {}
 
   generateCards(level: Level): Card[] {
-    this.columsCount = level.col;
+    this.columnsCount = level.col;
     const assetsArray = [
       'jellyfish',
       'sea-turtle',
@@ -57,6 +57,10 @@ export class CardService {
   }
 
   onCardClick(index: number) {
+    if (!this.cards[index] || !this.cards[index].isEnabled) {
+      return;
+    }
+
     if (this.firstFlippedIndex === -1) {
       this.firstFlippedIndex = index;
       this.cards[index].isEnabled = false;
@@ -89,6 +93,7 @@ export class CardService {
     for (const card of this.cards) {
       card.isEnabled = !card.isFlipped;
     }
+    this.secondFlippedIndex = -1;
     this.cardsUpdate(this.cards);
   };
 

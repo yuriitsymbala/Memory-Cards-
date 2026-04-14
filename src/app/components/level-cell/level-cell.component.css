@@ -5,10 +5,15 @@
   justify-content: center;
   width: var(--cell-size);
   height: var(--cell-size);
+  padding: 0;
 
   border-radius: 1rem;
   border: 3px dashed #484848;
   transition: transform 0.15s ease;
+  appearance: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
 
   margin: var(--cell-margin);
 

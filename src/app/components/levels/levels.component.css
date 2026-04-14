@@ -12,11 +12,11 @@
 
   --cell-size: 10rem;
   --cell-margin: calc(var(--cell-size) * 0.05);
-  --colums-count: 3;
+  --columns-count: 3;
 
   width: calc(
-    var(--cell-size) * var(--colums-count) + var(--cell-margin) *
-      (var(--colums-count) + 1) * 2 + 1.5rem
+    var(--cell-size) * var(--columns-count) + var(--cell-margin) *
+      (var(--columns-count) + 1) * 2 + 1.5rem
   );
 
   border-radius: 1rem;

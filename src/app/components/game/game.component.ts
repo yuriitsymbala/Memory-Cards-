@@ -1,7 +1,7 @@
 import { Component, ViewChild, inject } from '@angular/core';
 import { Card } from '../../models/Card';
 import { CardCellComponent } from '../card-cell/card-cell.component';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PopupComponent } from '../popup/popup.component';
 import { Level } from 'src/app/models/Level';
@@ -18,7 +18,7 @@ import { getGridCellSize } from 'src/app/utils';
 })
 export class GameComponent {
   currentLevel!: Level;
-  columsCount: number = 3;
+  columnsCount: number = 3;
   cardSize: string = '10rem';
   cardCells: Card[] = [];
 
@@ -28,11 +28,10 @@ export class GameComponent {
     private levelService: LevelService,
     private cardService: CardService,
     private route: ActivatedRoute,
+    private router: Router
   ) {
-    this.currentLevel = this.levelService.getLevel(
-      Number(this.route.snapshot.params['id'])
-    );
-    this.columsCount = this.currentLevel.col;
+    this.currentLevel = this.resolveInitialLevel();
+    this.columnsCount = this.currentLevel.col;
 
     this.cardCells = this.cardService.generateCards(this.currentLevel);
     cardService.cardsUpdate = (cards) => {
@@ -48,6 +47,27 @@ export class GameComponent {
     this.updateCardSize();
   }
 
+  private resolveInitialLevel(): Level {
+    const requestedCardsAmount = Number(this.route.snapshot.params['id']);
+    const hasValidParam =
+      Number.isFinite(requestedCardsAmount) && requestedCardsAmount > 0;
+
+    if (hasValidParam) {
+      const matchedLevel = this.levelService.levelCells.find(
+        (level) => level.cardsAmount === requestedCardsAmount
+      );
+      if (matchedLevel) {
+        return matchedLevel;
+      }
+    }
+
+    this.router.navigateByUrl('/');
+    return (
+      this.levelService.levelCells.find((level) => level.isOpened) ??
+      this.levelService.levelCells[0]
+    );
+  }
+
   updateCardSize = () => {
     this.cardSize = getGridCellSize(
       this.currentLevel.col,
@@ -57,7 +77,7 @@ export class GameComponent {
 
   nextLevel() {
     this.updateCardSize();
-    this.columsCount = this.currentLevel.col;
+    this.columnsCount = this.currentLevel.col;
     this.cardCells = this.cardService.generateCards(this.currentLevel);
   }
 
